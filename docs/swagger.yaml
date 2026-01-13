@@ -1,0 +1,75 @@
+basePath: /
+definitions:
+  structs.Bot:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API para gerenciamento de bots
+  title: Bots API
+  version: "1.0"
+paths:
+  /bot:
+    get:
+      description: Retorna os detalhes de um robô específico pelo seu ID
+      parameters:
+      - description: ID do Robô
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.Bot'
+      summary: Obter robô por ID
+      tags:
+      - bots
+  /bot/create:
+    post:
+      consumes:
+      - application/json
+      description: Cria um robô passando nome e status
+      parameters:
+      - description: Dados do Robô
+        in: body
+        name: robot
+        required: true
+        schema:
+          $ref: '#/definitions/structs.Bot'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      summary: Criar um novo robô
+      tags:
+      - bots
+  /bots:
+    get:
+      description: Retorna uma lista de todos os robôs cadastrados
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/structs.Bot'
+            type: array
+      summary: Listar todos os robôs
+      tags:
+      - bots
+swagger: "2.0"

@@ -1,0 +1,115 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API para gerenciamento de bots",
+        "title": "Bots API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/bot": {
+            "get": {
+                "description": "Retorna os detalhes de um robô específico pelo seu ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bots"
+                ],
+                "summary": "Obter robô por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do Robô",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/structs.Bot"
+                        }
+                    }
+                }
+            }
+        },
+        "/bot/create": {
+            "post": {
+                "description": "Cria um robô passando nome e status",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bots"
+                ],
+                "summary": "Criar um novo robô",
+                "parameters": [
+                    {
+                        "description": "Dados do Robô",
+                        "name": "robot",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/structs.Bot"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/bots": {
+            "get": {
+                "description": "Retorna uma lista de todos os robôs cadastrados",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bots"
+                ],
+                "summary": "Listar todos os robôs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/structs.Bot"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "structs.Bot": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

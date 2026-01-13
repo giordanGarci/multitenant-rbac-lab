@@ -1,6 +1,8 @@
 package services
 
 import (
+	"strconv"
+
 	"github.com/giordanGarci/api-tenants/repository"
 	"github.com/giordanGarci/api-tenants/structs"
 )
@@ -16,8 +18,10 @@ func NewService(repo repository.BotRepository) *Service {
 	}
 }
 
-func (s *Service) GetBots() ([]structs.Bot, error) {
-	bots, _ := s.repository.GetAllBots()
+func (s *Service) GetBots(tenantID string) ([]structs.Bot, error) {
+	tenantIDInt, _ := strconv.ParseInt(tenantID, 10, 64)
+
+	bots, _ := s.repository.GetAllBots(tenantIDInt)
 
 	return bots, nil
 }

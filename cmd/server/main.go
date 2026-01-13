@@ -33,8 +33,8 @@ func main() {
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 
 	fmt.Println("server listening on :8080")
-
-	if err := http.ListenAndServe(":8080", interceptors.UserMiddleware(mux)); err != nil {
+	middlewaresStack := interceptors.UserMiddleware(interceptors.TenantMiddleware(mux))
+	if err := http.ListenAndServe(":8080", middlewaresStack); err != nil {
 		panic(err)
 	}
 

@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/giordanGarci/api-tenants/interceptors"
 	"github.com/giordanGarci/api-tenants/services"
 	"github.com/giordanGarci/api-tenants/structs"
 )
@@ -28,10 +30,19 @@ func NewBotHandler(service *services.Service) *BotHandler {
 // @Success      200  {array}  structs.Bot
 // @Router       /bots [get]
 func (h *BotHandler) GetAllBotsHandler(w http.ResponseWriter, r *http.Request) {
+
+	user, ok := interceptors.FromContext(r.Context())
+	if !ok {
+		http.Error(w, "user not found in context", http.StatusUnauthorized)
+		return
+	}
+
+	fmt.Println("User ID from context:", user.UserID)
+
 	bots, _ := h.service.GetBots()
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(bots)
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(bots)
 }
 
 // GetBotByIDHandler godoc

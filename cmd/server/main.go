@@ -6,6 +6,7 @@ import (
 
 	_ "github.com/giordanGarci/api-tenants/docs"
 	"github.com/giordanGarci/api-tenants/handlers"
+	"github.com/giordanGarci/api-tenants/interceptors"
 	"github.com/giordanGarci/api-tenants/repository"
 	"github.com/giordanGarci/api-tenants/services"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -22,16 +23,18 @@ func main() {
 	service := services.NewService(repo)
 	botHandler := handlers.NewBotHandler(service)
 
-	http.HandleFunc("/health", handlers.HealthHandler)
-	http.HandleFunc("/bots", botHandler.GetAllBotsHandler)
-	http.HandleFunc("/bot", botHandler.GetBotByIDHandler)
-	http.HandleFunc("/bot/create", botHandler.CreateBotHandler)
+	mux := http.NewServeMux()
 
-	http.Handle("/swagger/", httpSwagger.WrapHandler)
+	mux.HandleFunc("/health", handlers.HealthHandler)
+	mux.HandleFunc("/bots", botHandler.GetAllBotsHandler)
+	mux.HandleFunc("/bot", botHandler.GetBotByIDHandler)
+	mux.HandleFunc("/bot/create", botHandler.CreateBotHandler)
+
+	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 
 	fmt.Println("server listening on :8080")
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", interceptors.UserMiddleware(mux)); err != nil {
 		panic(err)
 	}
 

@@ -37,16 +37,10 @@ func (h *BotHandler) GetAllBotsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tenantID, ok := interceptors.TenantFromContext(r.Context())
-	if !ok {
-		http.Error(w, "tenant not found in context", http.StatusUnauthorized)
-		return
-	}
-
 	fmt.Println("User ID from context:", user.UserID)
-	fmt.Println("Tenant ID from context:", tenantID)
+	fmt.Println("Tenant ID from context:", user.TenantID)
 
-	bots, _ := h.service.GetBots(tenantID)
+	bots, _ := h.service.GetBots(user.TenantID)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(bots)

@@ -9,7 +9,7 @@ const (
 )
 
 type UserContext struct {
-	UserID   string
-	TenantID string
+	UserID   int64
+	TenantID int64
 	Role
 }

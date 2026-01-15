@@ -3,6 +3,7 @@ package interceptors
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/giordanGarci/api-tenants/structs"
 )
@@ -22,7 +23,10 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		userCtx := &structs.UserContext{UserID: userID, TenantID: tenantID, Role: structs.Role(role)}
+		userIDInt, _ := strconv.ParseInt(userID, 10, 64)
+		tenantIDInt, _ := strconv.ParseInt(tenantID, 10, 64)
+
+		userCtx := &structs.UserContext{UserID: userIDInt, TenantID: tenantIDInt, Role: structs.Role(role)}
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, userKey, userCtx)
 		r = r.WithContext(ctx)

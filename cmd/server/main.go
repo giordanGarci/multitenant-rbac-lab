@@ -26,9 +26,14 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/health", handlers.HealthHandler)
-	mux.HandleFunc("/bots", botHandler.GetAllBotsHandler)
-	mux.HandleFunc("/bot", botHandler.GetBotByIDHandler)
-	mux.HandleFunc("/bot/create", botHandler.CreateBotHandler)
+
+	middlewareGetBots := interceptors.EnsureRole("admin", "dev", "user")
+	mux.Handle("/bots", middlewareGetBots(http.HandlerFunc(botHandler.GetAllBotsHandler)))
+	mux.Handle("/bot", middlewareGetBots(http.HandlerFunc(botHandler.GetBotByIDHandler)))
+
+	middlewareCreateBot := interceptors.EnsureRole("admin", "dev")
+	createChain := middlewareCreateBot(http.HandlerFunc(botHandler.CreateBotHandler))
+	mux.Handle("/bot/create", createChain)
 
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 

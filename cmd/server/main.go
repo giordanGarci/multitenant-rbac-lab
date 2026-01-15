@@ -29,7 +29,7 @@ func main() {
 
 	middlewareGetBots := interceptors.EnsureRole("admin", "dev", "user")
 	mux.Handle("/bots", middlewareGetBots(http.HandlerFunc(botHandler.GetAllBotsHandler)))
-	mux.Handle("/bot", middlewareGetBots(http.HandlerFunc(botHandler.GetBotByIDHandler)))
+	mux.Handle("/bot/{id}", middlewareGetBots(http.HandlerFunc(botHandler.GetBotByIDHandler)))
 
 	middlewareCreateBot := interceptors.EnsureRole("admin", "dev")
 	createChain := middlewareCreateBot(http.HandlerFunc(botHandler.CreateBotHandler))

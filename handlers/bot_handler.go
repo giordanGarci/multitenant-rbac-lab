@@ -55,7 +55,7 @@ func (h *BotHandler) GetAllBotsHandler(w http.ResponseWriter, r *http.Request) {
 // @Success      200  {object}  structs.Bot
 // @Router       /bot [get]
 func (h *BotHandler) GetBotByIDHandler(w http.ResponseWriter, r *http.Request) {
-	botID := r.URL.Query().Get("id")
+	botID := r.PathValue("id")
 	botIDInt, err := strconv.ParseInt(botID, 10, 64)
 	if err != nil {
 		http.Error(w, "id inválido", http.StatusBadRequest)

@@ -27,13 +27,12 @@ func main() {
 
 	mux.HandleFunc("/health", handlers.HealthHandler)
 
-	middlewareGetBots := interceptors.EnsureRole("admin", "dev", "user")
-	mux.Handle("/bots", middlewareGetBots(http.HandlerFunc(botHandler.GetAllBotsHandler)))
-	mux.Handle("/bot/{id}", middlewareGetBots(http.HandlerFunc(botHandler.GetBotByIDHandler)))
+	mux.Handle("GET /bots", interceptors.RequirePermission(interceptors.PermViewBot)(http.HandlerFunc(botHandler.GetAllBotsHandler)))
+	mux.Handle("GET /bot/{id}", interceptors.RequirePermission(interceptors.PermViewBot)(http.HandlerFunc(botHandler.GetBotByIDHandler)))
 
-	middlewareCreateBot := interceptors.EnsureRole("admin", "dev")
-	createChain := middlewareCreateBot(http.HandlerFunc(botHandler.CreateBotHandler))
-	mux.Handle("/bot/create", createChain)
+	mux.Handle("POST /bot/run/{id}", interceptors.RequirePermission(interceptors.PermRunBot)(http.HandlerFunc(botHandler.RunBotHandler)))
+
+	mux.Handle("POST /bot/create", interceptors.RequirePermission(interceptors.PermCreateBot)(http.HandlerFunc(botHandler.CreateBotHandler)))
 
 	mux.Handle("/swagger/", httpSwagger.WrapHandler)
 

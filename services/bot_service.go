@@ -31,3 +31,19 @@ func (s *Service) GetBot(id int64) (*structs.Bot, error) {
 func (s *Service) CreateBot(bot structs.Bot) error {
 	return s.repository.AddBot(bot)
 }
+
+func (s *Service) RunBot(id int64) error {
+	// Lógica para iniciar o bot
+	bot, err := s.repository.GetBotByID(id)
+	if err != nil || bot == nil {
+		return err
+	}
+	bot.Status = "running"
+
+	err = s.repository.UpdateBot(*bot)
+	if err != nil {
+		return err
+	}
+	return nil
+
+}

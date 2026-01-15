@@ -89,3 +89,23 @@ func (h *BotHandler) CreateBotHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusCreated)
 }
+
+func (h *BotHandler) RunBotHandler(w http.ResponseWriter, r *http.Request) {
+	botID := r.PathValue("id")
+
+	botIDInt, err := strconv.ParseInt(botID, 10, 64)
+	if err != nil {
+		http.Error(w, "id inválido", http.StatusBadRequest)
+		return
+	}
+	err = h.service.RunBot(botIDInt)
+	if err != nil {
+		http.Error(w, "could not run bot", http.StatusInternalServerError)
+		return
+	}
+
+	// Lógica para executar o bot
+	fmt.Printf("Executando o bot: %+v\n", botIDInt)
+	w.WriteHeader(http.StatusOK)
+
+}

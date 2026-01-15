@@ -12,6 +12,7 @@ type BotRepository interface {
 	GetAllBots(tenantID int64) ([]structs.Bot, error)
 	GetBotByID(id int64) (*structs.Bot, error)
 	AddBot(bot structs.Bot) error
+	UpdateBot(bot structs.Bot) error
 }
 
 // InMemoryBotRepository é a implementação em memória do BotRepository
@@ -56,5 +57,17 @@ func (r *InMemoryBotRepository) GetBotByID(id int64) (*structs.Bot, error) {
 
 func (r *InMemoryBotRepository) AddBot(bot structs.Bot) error {
 	r.bots = append(r.bots, bot)
+	return nil
+}
+
+func (r *InMemoryBotRepository) UpdateBot(updatedBot structs.Bot) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	for i, bot := range r.bots {
+		if bot.ID == updatedBot.ID {
+			r.bots[i] = updatedBot
+			return nil
+		}
+	}
 	return nil
 }
